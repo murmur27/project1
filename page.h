@@ -30,6 +30,16 @@ class Page {
         }
         return pages[0];//error
         }
+        bool operator<(const Page& page2) const{
+            """page 비교해서 위에 있는지 밑에 있는지 판단"""
+            """can modify""";
+            if(true){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
     private:
         int x, y; // position of the page on the board
         int width, height; // width and height of the page 

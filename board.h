@@ -88,7 +88,9 @@ void Board::insert_page(int x, int y, int i_width, int i_height, int id, char co
     pages.push_back(page);
     for (int h = y; h < (i_height+y); h++) {
         for (int w = x; w < (i_width+x); w++) {
+            //insert_page할때 해당 자리에 다른 문자 있으면, on_page임을 표시.
             board[h*width + w] = content;
+            //board의 각 content 자리에 해당 값이 바뀔 때마다, id리스트를 갱신하고, 각 자리마다 id log가 남도록 구성.
         }
     }
     print_board();
@@ -105,7 +107,7 @@ void Board::delete_page(int id) {
             board[h*width + w] = ' ';
         }
     }
-    print_board();
+    print_board();//반복해서 출력해야함
 }
 
 void Board::modify_content(int id, char content) {
