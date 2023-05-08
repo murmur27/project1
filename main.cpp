@@ -3,7 +3,6 @@
 #include <string>
 
 #include "board.h"
-
 using namespace std;
 
 void manage_board(string input_file, string output_file) {
