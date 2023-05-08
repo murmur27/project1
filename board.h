@@ -85,6 +85,7 @@ void Board::print_job(int job_idx, char job_type, int id) {
 
 void Board::insert_page(int x, int y, int i_width, int i_height, int id, char content) {
     Page page(x,y,i_width,i_height,id,content);
+    pages.push_back(page);
     for (int h = y; h < (i_height+y); h++) {
         for (int w = x; w < (i_width+x); w++) {
             board[h*width + w] = content;
@@ -94,6 +95,16 @@ void Board::insert_page(int x, int y, int i_width, int i_height, int id, char co
 }
 
 void Board::delete_page(int id) {
+    Page del_page = Page::find_by_id(id,pages);
+    int x=del_page.get_x();
+    int y=del_page.get_y();
+    int d_width=del_page.get_width();
+    int d_height=del_page.get_height();
+    for (int h = y; h < (d_height+y); h++) {
+        for (int w = x; w < (d_width+x); w++) {
+            board[h*width + w] = ' ';
+        }
+    }
     print_board();
 }
 
