@@ -14,7 +14,7 @@ class Board {
         void print_job(int job_idx, char job_type, int id);
 
         //job functions
-        void insert_page(int x, int y, int width, int height, int id, int content);
+        void insert_page(int x, int y, int width, int height, int id, char content);
         void delete_page(int id);
         void modify_content(int id, char content);
         void modify_position(int id, int x, int y);
@@ -83,19 +83,24 @@ void Board::print_job(int job_idx, char job_type, int id) {
 }
 
 
-void Board::insert_page(int x, int y, int width, int height, int id, int content) {
-
+void Board::insert_page(int x, int y, int width, int height, int id, char content) {
+    for (int h = y; h < height; h++) {
+        for (int w = x; w < width; w++) {
+            board[h*width + w] = content;
+        }
+    }
+    print_board;
 }
 
 void Board::delete_page(int id) {
-    
+    print_board;
 }
 
 void Board::modify_content(int id, char content) {
-   
+    print_board;
 
 }
 void Board::modify_position(int id, int x, int y) {
-   
+    print_board;
     
 }
