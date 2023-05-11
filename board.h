@@ -86,6 +86,13 @@ void Board::print_job(int job_idx, char job_type, int id) {
 void Board::insert_page(int x, int y, int i_width, int i_height, int id, char content) {
     Page page(x,y,i_width,i_height,id,content);
     pages.push_back(page);
+    //below_page contents 저장.
+    for (int h = y; h < (i_height+y); h++) {
+        for (int w = x; w < (i_width+x); w++) {
+            page.below_contents = new char[width*height];
+            page.below_contents[h*width + w]=board[h*width + w];
+        }
+    }
     for (int h = y; h < (i_height+y); h++) {
         for (int w = x; w < (i_width+x); w++) {
             //insert_page할때 해당 자리에 다른 문자 있으면, on_page임을 표시.
@@ -97,16 +104,41 @@ void Board::insert_page(int x, int y, int i_width, int i_height, int id, char co
 }
 
 void Board::delete_page(int id) {
+    //recursive delete
+    if(true){//on page
+    }
     Page del_page = Page::find_by_id(id,pages);
     int x=del_page.get_x();
     int y=del_page.get_y();
     int d_width=del_page.get_width();
     int d_height=del_page.get_height();
+    for (int h = y; h < (d_height+y); h++) {//먼저 아래틀 저장.
+        for (int w = x; w < (d_width+x); w++) {
+            board[h*width + w] = del_page.below_contents[h*width + w];//below_page 정의 바람., 아니면 순서식 만들어서 재 생성.
+        }
+    }
+    if(del_page.on_page.back()==-1){//Page private value below_page값이 -1일때 지우기, id==-1이면 error
+    for (int h = y; h < (d_height+y); h++) {
+        for (int w = x; w < (d_width+x); w++) {
+            board[h*width + w] = del_page.below_contents[h*width + w];//below_page 정의 바람., 아니면 순서식 만들어서 재 생성.
+        }
+    }
+    print_board();
+    return;//initialize consideration
+    }
+    else {
+        for(int i=del_page.on_page.size()-1;i>=0;i--){
+            int on_page_id=del_page.on_page[i];
+            Board::delete_page(on_page_id);
+            del_page;//수정바람
+        }
+    }
     for (int h = y; h < (d_height+y); h++) {
         for (int w = x; w < (d_width+x); w++) {
             board[h*width + w] = ' ';
         }
     }
+    //수정사항
     print_board();//반복해서 출력해야함
 }
 
