@@ -110,14 +110,29 @@ void Board::insert_page(int x, int y, int i_width, int i_height, int id, char co
     print_board();
 }
 
-void Board::delete_page(int id) {
+void Board::delete_page(int id) {//pages에서, on_page에서 id 삭제해야함. 노노. process를 크게 세가지로 나누고 부분에 대해 recursive 먹이면된다.
     //recursive delete
     //on_page
+    //1st. delete process
     Page del_page = Page::find_by_id(id,pages);
     int x=del_page.get_x();
     int y=del_page.get_y();
     int d_width=del_page.get_width();
     int d_height=del_page.get_height();
+    if(del_page.on_pages.size()==0){
+        for (int h = y; h < (d_height+y); h++) {
+        for (int w = x; w < (d_width+x); w++) {
+            board[h*width + w] = del_page.below_contents[h*width + w];//below_contents는 insert_page에서 declared 된다. 이후 주요함수들의 과정에서 편집됨.
+        }
+    }
+        print_board();
+        return;
+    }
+    else{
+    for(int i=0;i<del_page.on_pages.size();i++){
+    Board::delete_page(del_page.on_pages[del_page.on_pages.size()-i-1]);
+    }
+    }
     for (int h = y; h < (d_height+y); h++) {//먼저 아래틀 저장.
         for (int w = x; w < (d_width+x); w++) {
             board[h*width + w] = del_page.below_contents[h*width + w];//below_page 정의 바람., 아니면 순서식 만들어서 재 생성.
