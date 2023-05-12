@@ -85,6 +85,7 @@ void Board::print_job(int job_idx, char job_type, int id) {
 
 void Board::insert_page(int x, int y, int i_width, int i_height, int id, char content) {
     Page page(x,y,i_width,i_height,id,content);
+    push_on_page(page,pages);//on_page
     pages.push_back(page);
     //below_page contents 저장.
     for (int h = y; h < (i_height+y); h++) {
@@ -93,6 +94,12 @@ void Board::insert_page(int x, int y, int i_width, int i_height, int id, char co
             page.below_contents[h*width + w]=board[h*width + w];
         }
     }
+    for (int i = 0; i < pages.size(); i++) {
+            int x=pages[i].get_x();
+            int y=pages[i].get_y();
+            int d_width=pages[i].get_width();
+            int d_height=pages[i].get_height();
+        }
     for (int h = y; h < (i_height+y); h++) {
         for (int w = x; w < (i_width+x); w++) {
             //insert_page할때 해당 자리에 다른 문자 있으면, on_page임을 표시.
@@ -105,8 +112,7 @@ void Board::insert_page(int x, int y, int i_width, int i_height, int id, char co
 
 void Board::delete_page(int id) {
     //recursive delete
-    if(true){//on page
-    }
+    //on_page
     Page del_page = Page::find_by_id(id,pages);
     int x=del_page.get_x();
     int y=del_page.get_y();
