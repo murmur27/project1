@@ -4,6 +4,7 @@ class Page {
     public:
         Page(int in_x,int in_y,int in_width,int in_height,int in_id,char in_content):x(in_x),y(in_y),width(in_width),height(in_height),id(in_id),content(in_content){
             vector <int> on_pages={};//member varialbe, size==0, id로 access 가능해야 중복 에러 발생 x.
+            char* below_contents = new char[width*height];
         }
         int get_x(){
             return x;
@@ -45,6 +46,9 @@ void push_on_page(Page current_page,vector <Page> pages){//current_page를 넣�
             int d_width1=current_page.get_width();
             int d_height1=current_page.get_height();
             int updated_order=-1;
+            if(pages.size()==0){
+                return;
+            }
             for (int i = 0; i < pages.size(); i++) {//pages 안의 원소들 중에서 가장 위에 있는 것(pages vector에서 가장 뒤에 것)을 선택.
                 int x2=pages[i].get_x();
                 int y2=pages[i].get_y();
@@ -62,6 +66,7 @@ void push_on_page(Page current_page,vector <Page> pages){//current_page를 넣�
             if(updated_order>=0){
             pages[updated_order].on_pages.push_back(current_page.get_id());
             }
+            return;
         }
 //on_page가 1차 vector로 나타남.
 vector <Page> pages={};//initialization, size==0
