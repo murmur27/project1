@@ -129,9 +129,22 @@ void Board::delete_page(int id) {//pages에서, on_page에서 id 삭제해야함
 }
 
 void Board::modify_content(int id, char content) { 
-    print_board();
-
+    first_delete_process(id);
+    int page_order = Page::find_by_id(id,pages);
+    int m_x=pages[page_order].get_x();
+    int m_y=pages[page_order].get_y();
+    int m_width=pages[page_order].get_width();
+    int m_height=pages[page_order].get_height();
+    for (int h = m_y; h < (m_height+m_y); h++) {//modified content로 다시 채우기.
+        for (int w = m_x; w < (m_width+m_x); w++) {
+            board[h*width + w] = content;
+        }
+    }
+    second_delete_process(id);
+    //해당 id의 page 업데이트.
+    pages[page_order].modify_content(content);
 }
+
 void Board::modify_position(int id, int x, int y) {
     print_board();
     
