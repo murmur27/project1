@@ -139,21 +139,153 @@
 >> (7) Delete 8
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 |                                                                                                     | 
-|       Ë ˙ — o                                                                                       | 
-|   † & k           ü                                                                                 | 
-|                     l l l l l l                                                                     | 
-|                   l l l l l l                                                                     | 
-|        ˚ — o       l l l l l l                                                                     | 
-|                     l l l l l l                                                                     | 
-|                     l l l l l l                                                                     | 
-|                     l l l l l l                                                                     | 
-|       ∏ ˙ a         l l l l l l                                                                     | 
-|   ê ô – o         p l l l l l l                                                                     | 
-| $ k           ê $ k l l l l l l                                                                     | 
-|           ê ä  P ˛ l l l l l l                                                                     | 
-|                                                                                                    | 
-|                                                                                                     | 
-|                                                                                                   | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c k k k k k                                                                                 | 
+| c c c c c k k k k k                                                                                 | 
+| c c c c c k k k k k                                                                                 | 
+| c c c c c k k k k k                                                                                 | 
+| c c c c c k k k k k                                                                                 | 
+| c c x x x k k k k k                                                                                 | 
+| c c x x x k k k k k                                                                                 | 
+| c c c c c k k k k k                                                                                 | 
+| c c c c c k k k k k                                                                                 | 
+| c c c c c k k k k k                                                                                 | 
+| c c c c c k k k k k                                                                                 | 
+| c c c c c k k k k k                                                                                 | 
+| c c c c c k k k k k                                                                                 | 
+| c c c c c k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+|                                                                                                     | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c x x x c c c c c                                                                                 | 
+| c c x x x c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+|                                                                                                     | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+| c c c c c c c c c c                                                                                 | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|     x x x                                                                                           | 
+|     x x x                                                                                           | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+|                                                                                                     | 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+|                                                                                                     | 
+|                                                                                                     | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+|     x x x k k k k k                                                                                 | 
+|     x x x k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+|                                                                                                     | 
+|                                                                                                     | 
+|           k k k k k                                                                                 | 
+|           k l l l l l l l l l l                                                                     | 
+|           k l l l l l l l l l l                                                                     | 
+|           k l l l l l l l l l l                                                                     | 
+|           k l l l l l l l l l l                                                                     | 
+|     x x x k l l l l l l l l l l                                                                     | 
+|     x x x k l l l l l l l l l l                                                                     | 
+|           k l l l l l l l l l l                                                                     | 
+|           k l l l l l l l l l l                                                                     | 
+|           k l l l l l l l l l l                                                                     | 
+|           k l l l l l l l l l l                                                                     | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
+|           k k k k k                                                                                 | 
 |           k k k k k                                                                                 | 
 |           k k k k k                                                                                 | 
 |           k k k k k                                                                                 | 
