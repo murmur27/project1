@@ -32,6 +32,13 @@ class Page {
             }
         return -1;//error!!! 유의.
         }
+        void modify_content(char modified_content){
+            content=modified_content;
+        }
+        void modify_position(int modified_x, int modified_y){
+            x=modified_x;
+            y=modified_y;
+        }
     private:
         int x, y; // position of the page on the board
         int width, height; // width and height of the page 
@@ -43,16 +50,31 @@ void push_on_page(Page current_page,vector <Page> &pages){//current_page를 넣�
     int y1=current_page.get_y();
     int d_width1=current_page.get_width();
     int d_height1=current_page.get_height();
+    int id1=current_page.get_id();
     int updated_order=-1;
+    int there_is_same_id=0;
+    int limit_searching_order;
     if(pages.size()==0){
     }
     else{
-        for (int i = 0; i < pages.size(); i++) {//pages 안의 원소들 중에서 가장 위에 있는 것(pages vector에서 가장 뒤에 것)을 선택.
+        for (int i = 0; i < pages.size(); i++) {//identify whether there is same id
+            int id2=pages[i].get_id();
+            if(id1==id2){
+                there_is_same_id=1;
+                limit_searching_order=i;
+            }
+        }
+        if(there_is_same_id==0){
+            limit_searching_order=pages.size();
+        }
+        //만약에 pages에 이미 current_page가 섞여 있는 경우에 예외처리. current_page가 pages 상에 있는 index 이전까지에 대해 push_on_page를 수행하면된다.
+        for (int i = 0; i < limit_searching_order; i++) {//pages 안의 원소들 중에서 가장 위에 있는 것(pages vector에서 가장 뒤에 것)을 선택.
             int x2=pages[i].get_x();
             int y2=pages[i].get_y();
             int d_width2=pages[i].get_width();
             int d_height2=pages[i].get_height();
-            if((x2+d_width2-1<x1||x1+d_width1-1<x2)||(y2+d_height2-1<y1||y1+d_height1-1<y2)){//on_page가 아닐 때의 조건.
+            int id2=pages[i].get_id();
+            if(((x2+d_width2-1<x1||x1+d_width1-1<x2)||(y2+d_height2-1<y1||y1+d_height1-1<y2))||id1==id2){//on_page가 아닐 때의 조건.
 
             }
             else{//on_page일때.

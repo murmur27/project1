@@ -97,10 +97,10 @@ void Board::insert_page(int i_x, int i_y, int i_width, int i_height, int id, cha
         }
     }
     for (int h = i_y; h < (i_height+i_y); h++) {//make_below_contents
-                for (int w = i_x; w < (i_width+i_x); w++) {
-                    page.below_contents[h*width + w]=board[h*width + w];
-                }
+        for (int w = i_x; w < (i_width+i_x); w++) {
+            page.below_contents[h*width + w]=board[h*width + w];
             }
+        }
     for (int h = i_y; h < (i_height+i_y); h++) {
         for (int w = i_x; w < (i_width+i_x); w++) {
             //insert_page할때 해당 자리에 다른 문자 있으면, on_page임을 표시.
@@ -108,7 +108,7 @@ void Board::insert_page(int i_x, int i_y, int i_width, int i_height, int id, cha
             //board의 각 content 자리에 해당 값이 바뀔 때마다, id리스트를 갱신하고, 각 자리마다 id log가 남도록 구성.
         }
     }
-    Board::print_board();
+    print_board();
 }
 
 void Board::delete_page(int id) {//pages에서, on_page에서 id 삭제해야함. 노노. process를 크게 세가지로 나누고 부분에 대해 recursive 먹이면된다.
@@ -131,6 +131,7 @@ void Board::delete_page(int id) {//pages에서, on_page에서 id 삭제해야함
 void Board::modify_content(int id, char content) { 
     first_delete_process(id);
     int page_order = Page::find_by_id(id,pages);
+    pages[page_order].modify_content(content);//variable 수정.
     int m_x=pages[page_order].get_x();
     int m_y=pages[page_order].get_y();
     int m_width=pages[page_order].get_width();
@@ -140,14 +141,38 @@ void Board::modify_content(int id, char content) {
             board[h*width + w] = content;
         }
     }
+    print_board();
     second_delete_process(id);
     //해당 id의 page 업데이트.
-    pages[page_order].modify_content(content);
 }
 
 void Board::modify_position(int id, int x, int y) {
+    first_delete_process(id);   
+    int page_order = Page::find_by_id(id,pages);
+    pages[page_order].modify_position(x,y);//variable 수정.
+    int m_width=pages[page_order].get_width();
+    int m_height=pages[page_order].get_height();
+    int m_content=pages[page_order].get_content();
+    for (int i = 0; i < pages.size(); i++) {//on_page 고려.
+        for (int j = 0; j < pages[i].on_pages.size(); j++) {
+            if(pages[i].on_pages[j] == id){
+                pages[i].on_pages.erase(pages[i].on_pages.begin() + j);
+            }
+        }
+    }
+    push_on_page(pages[page_order],pages);
+    for (int h = y; h < (m_height+y); h++) {//새로운 위치의 below_contents 받아오기.
+        for (int w = x; w < (m_width+x); w++) {
+            pages[page_order].below_contents[h*width + w]=board[h*width + w];
+        }
+    }
+    for (int h = y; h < (m_height+y); h++) {//modified x,y를 기준으로 다시 채우기.
+        for (int w = x; w < (m_width+x); w++) {
+            board[h*width + w] = m_content;
+        }
+    }
     print_board();
-    
+    second_delete_process(id);
 }
 
 void Board::first_delete_process(int id){//위의 장 중 선택해서 제거하는 단계.
@@ -170,7 +195,7 @@ void Board::first_delete_process(int id){//위의 장 중 선택해서 제거하
             board[h*width + w] = pages[page_order].below_contents[h*width + w];
         }
     }
-    Board::print_board();
+    print_board();
 }
 
 void Board::second_delete_process(int id){
@@ -197,7 +222,7 @@ void Board::second_delete_process(int id){
                     board[h*width + w] = i_content;//다시 채우기.
                 }
             }
-            Board::print_board();
+            print_board();
             Board::second_delete_process(pages[page_order].on_pages[pages[page_order].on_pages.size()-i-1]);
         }
     }
