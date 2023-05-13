@@ -87,9 +87,9 @@ void Board::print_job(int job_idx, char job_type, int id) {
 
 void Board::insert_page(int i_x, int i_y, int i_width, int i_height, int id, char content) {
     Page page=Page(i_x,i_y,i_width,i_height,id,content,width,height);
+    pages.push_back(page);
     page.on_pages={};
     push_on_page(page,pages);//on_page
-    pages.push_back(page);
     //below_page contents 저장.
     for (int h = 0; h < height; h++) {
         for (int w = 0; w < width; w++) {
@@ -117,13 +117,13 @@ void Board::delete_page(int id) {//pages에서, on_page에서 id 삭제해야함
     first_delete_process(id);//1st. delete process
     second_delete_process(id);//2nd. rebuilding process
     for (int i = 0; i < pages.size(); i++) {//3rd. delete id on vectors
-        if (pages[i].get_id() == id) {
-            pages.erase(pages.begin() + i);
-        }
         for (int j = 0; j < pages[i].on_pages.size(); j++) {
             if(pages[i].on_pages[j] == id){
                 pages[i].on_pages.erase(pages[i].on_pages.begin() + j);
             }
+        }
+        if (pages[i].get_id() == id) {
+            pages.erase(pages.begin() + i);
         }
     }
 }
@@ -160,6 +160,7 @@ void Board::modify_position(int id, int x, int y) {
             }
         }
     }
+    pages[page_order].on_pages={};//초기화 insert와 유사.
     push_on_page(pages[page_order],pages);
     for (int h = y; h < (m_height+y); h++) {//새로운 위치의 below_contents 받아오기.
         for (int w = x; w < (m_width+x); w++) {
@@ -196,16 +197,17 @@ void Board::first_delete_process(int id){//위의 장 중 선택해서 제거하
         }
     }
     print_board();
+    return;
 }
 
-void Board::second_delete_process(int id){
+void Board::second_delete_process(int id){//re-posit 이때 on_page 업데이트
     int page_order = Page::find_by_id(id,pages);
-    if(pages[page_order].on_pages.size()==0){
-    }
-    else{
-        std::sort(pages[page_order].on_pages.begin(),pages[page_order].on_pages.begin());
-        for(int i=0;i<pages[page_order].on_pages.size();i++){//유사 insert_page 그렇지만, 새로운 page 생성파트와 push_back 부분은 빠짐.
-            int i_page_order=Page::find_by_id(pages[page_order].on_pages[pages[page_order].on_pages.size()-i-1],pages);
+    int on_pages_size = pages[page_order].on_pages.size();
+    
+    if (on_pages_size>0){
+        std::sort(pages[page_order].on_pages.begin(),pages[page_order].on_pages.end());
+        for(int i=0;i<on_pages_size;i++){//유사 insert_page 그렇지만, 새로운 page 생성파트와 push_back 부분은 빠짐.
+            int i_page_order=Page::find_by_id(pages[page_order].on_pages[on_pages_size-i-1],pages);
             int i_x=pages[i_page_order].get_x();
             int i_y=pages[i_page_order].get_y();
             int i_width=pages[i_page_order].get_width();
@@ -223,7 +225,12 @@ void Board::second_delete_process(int id){
                 }
             }
             print_board();
-            Board::second_delete_process(pages[page_order].on_pages[pages[page_order].on_pages.size()-i-1]);
+            push_on_page(pages[i_page_order],pages);//on_page
+            Board::second_delete_process(pages[i_page_order].get_id());
         }
+    }
+    else {  
+        push_on_page(pages[page_order],pages);
+        return;
     }
 }
