@@ -165,70 +165,23 @@ void Board::modify_content(int id, char content) {
 }
 
 void Board::modify_position(int id, int x, int y) {//유일하게 에러 발생함...
-    first_delete_process(id);   
-    int flag1=-1;
-    int flag2=-1;
-    vector <int> del_on_pages;
-    for (int i = 0; i < pages.size(); i++) {
-        flag2=-1;
-        if (pages[i].get_id() == id) {
-            flag2=i;
-        }
-        if(flag2>=0){
-            del_on_pages=pages[flag2].on_pages;
-        }
-    }
-    for (int i = 0; i < pages.size(); i++) {//on_page 고려.
-        flag1=-1;
-        for (int j = 0; j < pages[i].on_pages.size(); j++){
-            if(pages[i].on_pages[j]==id){
-                flag1=j;
-            }
-        }
-        if(flag1>=0){
-            pages[i].on_pages.erase(pages[i].on_pages.begin() + flag1);
-        }
-    }
-    int page_order = Page::find_by_id(id,pages);
-    pages[page_order].modify_position_xy(x,y);//variable 수정.
-    Page current_page=pages[page_order];//현재 페이지.
-    int m_width=pages[page_order].get_width();
-    int m_height=pages[page_order].get_height();
-    int m_content=pages[page_order].get_content();
-    for (int h = y; h < (m_height+y); h++) {//새로운 위치의 below_contents 받아오기.
-        for (int w = x; w < (m_width+x); w++) {
-            pages[page_order].below_contents[h*width + w]=board[h*width + w];
-        }
-    }
-    for (int h = y; h < (m_height+y); h++) {//modified x,y를 기준으로 다시 채우기.
-        for (int w = x; w < (m_width+x); w++) {
-            board[h*width + w] = m_content;
-        }
-    }
-    vector <Page> new_pages=pages;
-    if(new_pages[page_order].on_pages.size()>0){//page_order 재배열.
-        int min_order;
-        min_order=Page::find_by_id((new_pages[page_order].on_pages[0]),new_pages);
-        for(int j=0;j<new_pages[page_order].on_pages.size();j++){
-            if(min_order>Page::find_by_id((new_pages[page_order].on_pages[j]),new_pages)){
-                min_order=Page::find_by_id((new_pages[page_order].on_pages[j]),new_pages);
-            }
-        }
-        for(int i=min_order;i<new_pages.size();i++){
-            pages.pop_back();
-        }
-        pages.erase(pages.begin()+page_order);
-        pages.push_back(new_pages[page_order]);
-        for(int i=min_order;i<new_pages.size();i++){
-            pages.push_back(new_pages[i]);
-        }
-    }
+    first_delete_process(id);
+    int page_order = Page::find_by_id(id,pages);//current_page 생성.
+    Page current_page=pages[page_order];
+    //pages 순서 재배열.
     vector <int> new_index={};//떼어낼 pages의 index 값들 저장.
     vector <Page> allocate_pages={};//떼어낸 page들 저장.
     vector <Page> switch_pages={};//pages의 copy.
     switch_pages=pages;
     recursive_find_on_index(id,new_index);
     sort(new_index.begin(),new_index.end());//new_index 오름차순 배열.
+    auto one=unique(new_index.begin(),new_index.end());//new_index의 중복값 제거.
+    new_index.erase(one, new_index.end());
+    for(int i=0;i<new_index.size();i++){//allocate_pages에 떼어낼 page들을 저장.
+            allocate_pages.push_back(pages[new_index[i]]);
+        }
+    new_index.push_back(page_order);//current_page도 new_index에 포함해서 제거.
+    sort(new_index.begin(),new_index.end());//current_page 추가했으니 인덱스 재정렬.
     if(new_index.size()>0){
         for(int i=0;i<pages.size();i++){//지워지는 page들을 on_page의 요소로 가지지 못하도록 삭제.
             for (int j = 0; j < pages[i].on_pages.size(); j++){
@@ -236,21 +189,32 @@ void Board::modify_position(int id, int x, int y) {//유일하게 에러 발생�
                 for(int k = 0; k <new_index.size(); k++){
                     int flag4=-1;
                     if(pages[i].on_pages[j]==pages[new_index[k]].get_id()){
-                        flag4=k;
-                    }
-                    if(flag4>=0){
-                        flag3=j;
+                        flag4=k;flag3=j;
                     }
                     if(flag4>=0&&flag3>=0){
                         pages[i].on_pages.erase(switch_pages[i].on_pages.begin() + flag3);//erase가 for 루프 돌면서 pages[i]의 해당 on_pages 변함. 안 변하도록 새로운 copy 생성. find_by_id 이용하자.
+                    }
                     flag4=-1;
                 }
                 flag3=-1;
             }
         }
-        for(int i=0;i<new_index.size();i++){
-            allocate_pages.push_back(pages[new_index[i]]);
+    }//여기까지가 삭제 프로세스.
+    current_page.modify_position_xy(x,y);//variable 수정.
+    int m_width=current_page.get_width();
+    int m_height=current_page.get_height();
+    int m_content=current_page.get_content();
+    for (int h = y; h < (m_height+y); h++) {//새로운 위치의 below_contents 받아오기.
+        for (int w = x; w < (m_width+x); w++) {
+            current_page.below_contents[h*width + w]=board[h*width + w];
         }
+    }
+    for (int h = y; h < (m_height+y); h++) {//modified x,y를 기준으로 다시 채우기.
+        for (int w = x; w < (m_width+x); w++) {
+            board[h*width + w] = m_content;
+        }
+    }
+    if(new_index.size()>0){
         for(int i=0;i<new_index.size();i++){
             pages.erase(pages.begin()+new_index[i]-i);//for 루프 돌면서 pages의 size 바뀜. 고려.
         }
@@ -260,11 +224,10 @@ void Board::modify_position(int id, int x, int y) {//유일하게 에러 발생�
         for(int j=0;j<allocate_pages.size();j++){
             pages.push_back(allocate_pages[j]);
         }
-    }
-    page_order = Page::find_by_id(id,pages);
-    push_on_page(pages[page_order],pages);//error.. pages에서 인덱스의 꼬임 발생.order 바꿔 넣자!!
+    }//여기까지가 생성 프로세스.
+    push_on_page(current_page,pages);//error.. pages에서 인덱스의 꼬임 발생.order 바꿔 넣자!!
     print_board();
-    second_delete_process_onlyfor_del(del_on_pages);
+    second_delete_process(id);
 }
 
 void Board::first_delete_process(int id){//위의 장 중 선택해서 제거하는 단계.
