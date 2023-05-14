@@ -24,7 +24,6 @@ class Page {
             return content;
         }
         char* below_contents;
-        vector <int> on_pages;//member variable
         static int find_by_id(int id, vector <Page> &pages) {//Page::find_by_id(id_to_find,pages)로 사용, order를 출력.
             for (int i = 0; i < pages.size(); i++) {
                 if (pages[i].get_id() == id) {
@@ -46,87 +45,58 @@ class Page {
         int id; // unique id for each page
         char content;
 };
-void push_on_page(Page current_page,vector <Page> &pages){//current_page를 넣으면 해당 페이지의 below_page들 중 가장 위의 것들을 골라서 해당 below_page의 on_pages vector에 on_page id 값 추가.
+vector <int> on_page_ids(Page current_page,vector <Page> &pages){//current_page를 넣으면 해당 page의 pages 위치에서 이후 page들만 비교하고, 먼저 겹치고, 안 겹치고를 이용해서 log 구하기.
     int x1=current_page.get_x();//위상 동일.
     int y1=current_page.get_y();
     int d_width1=current_page.get_width();
     int d_height1=current_page.get_height();
-    int id1=current_page.get_id();
-    vector <int> updated_order={};
-    vector <int> die_order{};
-    vector <int> final_order;
-    int there_is_same_id=0;
-    int limit_searching_order;
-    if(pages.size()==0){
+    vector <int> on_page_ids={};
+    if(pages.size()==0){//예외 처리. 어차피 없긴해.
+    return {};
     }
     else{
-        for (int i = 0; i < pages.size(); i++) {//identify whether there is same id
-            int id2=pages[i].get_id();
-            if(id1==id2){
-                there_is_same_id=1;
-                limit_searching_order=i;
-            }
+        int current_page_order = Page::find_by_id(current_page.get_id(),pages);
+        if(current_page_order==pages.size()-1){//예외 처리. 구하고자하는 on_pages의 id가 무조건 없음.
+            return on_page_ids;//size == 0
         }
-        if(there_is_same_id==0){
-            limit_searching_order=pages.size();
-        }
+        else{
         //만약에 pages에 이미 current_page가 섞여 있는 경우에 예외처리. current_page가 pages 상에 있는 index 이전까지에 대해 push_on_page를 수행하면된다.
-        for (int i = 0; i < limit_searching_order; i++) {//pages 안의 원소들 중에서 가장 위에 있는 것(pages vector에서 가장 뒤에 것)을 선택.
+        for (int i = current_page_order + 1; i < pages.size(); i++) {//pages 안의 원소들 중 current_page 이후 것들만 고려.
             int x2=pages[i].get_x();
             int y2=pages[i].get_y();
             int d_width2=pages[i].get_width();
             int d_height2=pages[i].get_height();
-            int id2=pages[i].get_id();
-            if(((x2+d_width2-1<x1||x1+d_width1-1<x2)||(y2+d_height2-1<y1||y1+d_height1-1<y2))||id1==id2){//겹치지 않을 때의 조건.
+            if((x2+d_width2-1<x1||x1+d_width1-1<x2)||(y2+d_height2-1<y1||y1+d_height1-1<y2)){//겹치지 않을 때의 조건.
 
             }
             else{   //겹칠 때.
-                    //일단은 current_page가 하나의 매칭만 가능하다고 생각한다. 주어진 case가 어떤 것을 반영하는 지는 실험적으로 확인.
-                    //error 확인됨. 다수의 매칭도 고려해야함.
-                    //추후에 error가 발생한다면 이부분 유의.
-                updated_order.push_back(i);//페이지가 겹친다면 해당 index가 updated_order에 할당된다. 뒤로 갈수록 나중에 부착된 페이지의 index를 가리키므로 순서도 고려.
-            }
-        }
-        final_order=updated_order;
-        for(int j = 1; j < updated_order.size(); j++){//current_page가 차지하는 영역 내에서 겹치는 요소들 재확인하고 만약 겹친다면 index 큰 것만 살림.
-            int x1=pages[updated_order[j]].get_x();//위상 동일.
-            int y1=pages[updated_order[j]].get_y();
-            int d_width1=pages[updated_order[j]].get_width();
-            int d_height1=pages[updated_order[j]].get_height();
-            int id1=pages[updated_order[j]].get_id();
-            for(int k = 0; k < j; k++){//j랑 k비교해서 겹치면 k 죽임.
-                int x2=pages[updated_order[k]].get_x();
-                int y2=pages[updated_order[k]].get_y();
-                int d_width2=pages[updated_order[k]].get_width();
-                int d_height2=pages[updated_order[k]].get_height();
-                int id2=pages[updated_order[k]].get_id();
-                if(((x2+d_width2-1<x1||x1+d_width1-1<x2)||(y2+d_height2-1<y1||y1+d_height1-1<y2))||id1==id2){//겹치지 않을 때의 조건.
-
+                bool cross = false;
+                if(on_page_ids.size()==0){
+                    cross = false;//default
                 }
                 else{
-                    die_order.push_back(updated_order[k]);//die_order는 k index 저장. updated_order의 index 와 동일.
+                    for(int j = 0; j < on_page_ids.size(); j++){//on_page_ids에 들어있는 id에 해당하는 page와는 겹치면 안됨.
+                        int x3=pages[on_page_ids[j]].get_x();
+                        int y3=pages[on_page_ids[j]].get_y();
+                        int d_width3=pages[on_page_ids[j]].get_width();
+                        int d_height3=pages[on_page_ids[j]].get_height();
+                        if((x2+d_width2-1<x3||x3+d_width3-1<x2)||(y2+d_height2-1<y3||y3+d_height3-1<y2)){//겹치지 않을 때의 조건.
+
+                        }
+                        else{//겹칠 때.
+                            cross = true;
+                        }
+                    }
+                }
+                if(cross==false){//비교하려는 페이지가 on_pages_id에 저장된 것과 겹치지 않는다면,
+                    on_page_ids.push_back(pages[i].get_id());
                 }
             }
         }
-        sort(die_order.begin(),die_order.end());
-        auto one=unique(die_order.begin(),die_order.end());
-        die_order.erase(one, die_order.end());
-        sort(die_order.begin(),die_order.end());
-        sort(updated_order.begin(),updated_order.end());
-        auto iter=set_difference(updated_order.begin(),updated_order.end(),die_order.begin(),die_order.end(),final_order.begin());
-        final_order.resize(iter-final_order.begin());
-        for(int f = 0; f < final_order.size(); f++){//final_order 역시 index를 지칭. 만약 이미 id를 가지고 있다면 추가 x.
-            int flag=0;
-            for(int i = 0; i<pages[final_order[f]].on_pages.size(); i++){
-                if(pages[final_order[f]].on_pages[i]==current_page.get_id()){
-                    flag=1;
-                }
-            }
-            if(flag==0){
-                pages[final_order[f]].on_pages.push_back(current_page.get_id());
-            }
+        sort(on_page_ids.begin(),on_page_ids.end());//id 오름차순으로 정렬해서 반환.
+        return on_page_ids;
         }
     }
 }
-//on_page가 1차 vector로 나타남.
+
 vector <Page> pages={};//initialization, size==0
