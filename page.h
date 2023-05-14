@@ -46,14 +46,14 @@ class Page {
         int id; // unique id for each page
         char content;
 };
-void push_on_page(Page &current_page,vector <Page> &pages){//current_page를 넣으면 해당 페이지의 below_page들 중 가장 위의 것들을 골라서 해당 below_page의 on_pages vector에 on_page id 값 추가.
+void push_on_page(Page current_page,vector <Page> &pages){//current_page를 넣으면 해당 페이지의 below_page들 중 가장 위의 것들을 골라서 해당 below_page의 on_pages vector에 on_page id 값 추가.
     int x1=current_page.get_x();//위상 동일.
     int y1=current_page.get_y();
     int d_width1=current_page.get_width();
     int d_height1=current_page.get_height();
     int id1=current_page.get_id();
     vector <int> updated_order={};
-    vector <int> die_order={};
+    vector <int> die_order{};
     vector <int> final_order;
     int there_is_same_id=0;
     int limit_searching_order;
@@ -87,6 +87,7 @@ void push_on_page(Page &current_page,vector <Page> &pages){//current_page를 넣
                 updated_order.push_back(i);//페이지가 겹친다면 해당 index가 updated_order에 할당된다. 뒤로 갈수록 나중에 부착된 페이지의 index를 가리키므로 순서도 고려.
             }
         }
+        final_order=updated_order;
         for(int j = 1; j < updated_order.size(); j++){//current_page가 차지하는 영역 내에서 겹치는 요소들 재확인하고 만약 겹친다면 index 큰 것만 살림.
             int x1=pages[updated_order[j]].get_x();//위상 동일.
             int y1=pages[updated_order[j]].get_y();
@@ -112,7 +113,8 @@ void push_on_page(Page &current_page,vector <Page> &pages){//current_page를 넣
         die_order.erase(one, die_order.end());
         sort(die_order.begin(),die_order.end());
         sort(updated_order.begin(),updated_order.end());
-        set_difference(updated_order.begin(),updated_order.end(),die_order.begin(),die_order.end(),back_inserter(final_order));
+        auto iter=set_difference(updated_order.begin(),updated_order.end(),die_order.begin(),die_order.end(),final_order.begin());
+        final_order.resize(iter-final_order.begin());
         for(int f = 0; f < final_order.size(); f++){//final_order 역시 index를 지칭. 만약 이미 id를 가지고 있다면 추가 x.
             int flag=0;
             for(int i = 0; i<pages[final_order[f]].on_pages.size(); i++){

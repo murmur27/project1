@@ -116,15 +116,14 @@ void Board::delete_page(int id) {//pages에서, on_page에서 id 삭제해야함
     //on_page
     first_delete_process(id);//1st. delete process
     second_delete_process(id);//2nd. rebuilding process
-    for (int i = 0; i < pages.size(); i++) {//3rd. delete id on vectors
-        for (int j = 0; j < pages[i].on_pages.size(); j++) {
-            if(pages[i].on_pages[j] == id){
-                pages[i].on_pages.erase(pages[i].on_pages.begin() + j);
-            }
-        }
+    int flag=-1;
+    for (int i = 0; i < pages.size(); i++) {//3rd. delete id on vectors error 위치!!
         if (pages[i].get_id() == id) {
-            pages.erase(pages.begin() + i);
+            flag=i;
         }
+    }
+    if(flag>=0){
+    pages.erase(pages.begin() + flag);
     }
 }
 
@@ -230,7 +229,6 @@ void Board::second_delete_process(int id){//re-posit 이때 on_page 업데이트
         }
     }
     else {  
-        push_on_page(pages[page_order],pages);
         return;
     }
 }
