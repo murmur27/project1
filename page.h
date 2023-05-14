@@ -36,7 +36,7 @@ class Page {
         void modify_content(char modified_content){
             content=modified_content;
         }
-        void modify_position(int modified_x, int modified_y){
+        void modify_position_xy(int modified_x, int modified_y){
             x=modified_x;
             y=modified_y;
         }

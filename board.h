@@ -206,7 +206,7 @@ void Board::modify_position(int id, int x, int y) {//유일하게 에러 발생�
         }
     }
     vector <Page> new_pages=pages;
-    if(new_pages[page_order].on_pages.size()>0){
+    if(new_pages[page_order].on_pages.size()>0){//page_order 재배열.
         int min_order;
         min_order=Page::find_by_id((new_pages[page_order].on_pages[0]),new_pages);
         for(int j=0;j<new_pages[page_order].on_pages.size();j++){
@@ -225,9 +225,29 @@ void Board::modify_position(int id, int x, int y) {//유일하게 에러 발생�
     }
     vector <int> new_index={};//떼어낼 pages의 index 값들 저장.
     vector <Page> allocate_pages={};//떼어낸 page들 저장.
+    vector <Page> switch_pages={};//pages의 copy.
+    switch_pages=pages;
     recursive_find_on_index(id,new_index);
     sort(new_index.begin(),new_index.end());//new_index 오름차순 배열.
     if(new_index.size()>0){
+        for(int i=0;i<pages.size();i++){//지워지는 page들을 on_page의 요소로 가지지 못하도록 삭제.
+            for (int j = 0; j < pages[i].on_pages.size(); j++){
+                int flag3=-1;
+                for(int k = 0; k <new_index.size(); k++){
+                    int flag4=-1;
+                    if(pages[i].on_pages[j]==pages[new_index[k]].get_id()){
+                        flag4=k;
+                    }
+                    if(flag4>=0){
+                        flag3=j;
+                    }
+                    if(flag4>=0&&flag3>=0){
+                        pages[i].on_pages.erase(switch_pages[i].on_pages.begin() + flag3);//erase가 for 루프 돌면서 pages[i]의 해당 on_pages 변함. 안 변하도록 새로운 copy 생성. find_by_id 이용하자.
+                    flag4=-1;
+                }
+                flag3=-1;
+            }
+        }
         for(int i=0;i<new_index.size();i++){
             allocate_pages.push_back(pages[new_index[i]]);
         }
@@ -296,6 +316,7 @@ void Board::second_delete_process(int id){//re-posit 이때 on_page 업데이트
                 }
             }
             print_board();
+            pages[i_page_order].on_pages={};
             push_on_page(pages[i_page_order],pages);//on_page
             Board::second_delete_process(pages[i_page_order].get_id());
         }
