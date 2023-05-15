@@ -18,8 +18,8 @@ class Board {
         void delete_page(int id);
         void modify_content(int id, char content);
         void modify_position(int id, int x, int y);
-        void first_delete_process(int id);
-        void second_delete_process(int id);
+        void first_delete_process(int id, vector<int>& del_log);//del_log를 반환. 떼어낸 페이지의 id를 순서대로 저장.
+        void second_delete_process(vector<int> inverted_del_log);//del_log를 뒤집어서 inverted_del_log로 넣고, 그 안의 순서대로 id를 뽑아 그것의 content 삽입.
         void second_delete_process_onlyfor_del(vector <int> &del_on_pages);
         vector<int> recursive_find_on_index(int id,vector<int> &new_index);
 
@@ -89,9 +89,7 @@ void Board::print_job(int job_idx, char job_type, int id) {
 
 void Board::insert_page(int i_x, int i_y, int i_width, int i_height, int id, char content) {
     Page page=Page(i_x,i_y,i_width,i_height,id,content,width,height);
-    pages.push_back(page);
-    page.on_pages={};
-    push_on_page(page,pages);//on_page
+    pages.push_back(page);//pages는 모든 insert_page의 log를 저장한다. 순서 불변해야 함!!
     //below_page contents 저장.
     for (int h = 0; h < height; h++) {
         for (int w = 0; w < width; w++) {
@@ -116,7 +114,8 @@ void Board::insert_page(int i_x, int i_y, int i_width, int i_height, int id, cha
 void Board::delete_page(int id) {//pages에서, on_page에서 id 삭제해야함. 노노. process를 크게 세가지로 나누고 부분에 대해 recursive 먹이면된다.
     //recursive delete
     //on_page
-    first_delete_process(id);//1st. delete process
+    vector <int> delete_log={};
+    first_delete_process(id,delete_log);//1st. delete process
     int flag1=-1;
     int flag2=-1;
     vector <int> del_on_pages;
@@ -249,47 +248,43 @@ void Board::modify_position(int id, int x, int y) {//유일하게 에러 발생�
     second_delete_process_onlyfor_del(del_on_pages);
 }
 
-void Board::first_delete_process(int id){//위의 장 중 선택해서 제거하는 단계.
-    int page_order=Page::find_by_id(id,pages);
-    int x=pages[page_order].get_x();
-    int y=pages[page_order].get_y();
-    int d_width=pages[page_order].get_width();
-    int d_height=pages[page_order].get_height();
-    if(pages[page_order].on_pages.size()==0){
+void Board::first_delete_process(int id,vector <int> &del_log){//위의 장 중 선택해서 제거하는 단계.//여기서 들어오는 log는 비어있지만, 이 재귀함수를 통과한 뒤의 log는 id들이 순서를 이루어 배열.
+    Page current_page=pages[Page::find_by_id(id,pages)];
+    int x=current_page.get_x();
+    int y=current_page.get_y();
+    int d_width=current_page.get_width();
+    int d_height=current_page.get_height();
+    if(on_page_ids(current_page,pages).size()==0){//예외 처리.
 
     }
-    else{
-        std::sort(pages[page_order].on_pages.begin(),pages[page_order].on_pages.begin());
-        for(int i=0;i<pages[page_order].on_pages.size();i++){
-            Board::first_delete_process(pages[page_order].on_pages[i]);
+    else{//on_page_ids는 오름차순 배열이므로, 그대로 따르면 된다.
+        for(int i=0;i<on_page_ids(current_page,pages).size();i++){
+            Board::first_delete_process(on_page_ids(current_page,pages)[i],del_log);
         }
     }
     for (int h = y; h < (d_height+y); h++) {
         for (int w = x; w < (d_width+x); w++) {
-            board[h*width + w] = pages[page_order].below_contents[h*width + w];
+            board[h*width + w] = pages[Page::find_by_id(id,pages)].below_contents[h*width + w];
         }
     }
+    del_log.push_back(current_page.get_id());//가장 처음 떼는 것부터 id가 들어가게 된다. 적어도 한개는 제거한다. 가장 마지막에 오는 항목을 필요하다면, pop_back()을 통해 제거한다. ex) modify_position
     print_board();
     return;
 }
 
-void Board::second_delete_process(int id){//re-posit 이때 on_page 업데이트
-    int page_order = Page::find_by_id(id,pages);
-    int on_pages_size = pages[page_order].on_pages.size();
-    
-    if (on_pages_size>0){
-        std::sort(pages[page_order].on_pages.begin(),pages[page_order].on_pages.end());
-        for(int i=0;i<on_pages_size;i++){//유사 insert_page 그렇지만, 새로운 page 생성파트와 push_back 부분은 빠짐.
-            int i_page_order=Page::find_by_id(pages[page_order].on_pages[on_pages_size-i-1],pages);
-            int i_x=pages[i_page_order].get_x();
-            int i_y=pages[i_page_order].get_y();
-            int i_width=pages[i_page_order].get_width();
-            int i_height=pages[i_page_order].get_height();
-            int i_id=pages[i_page_order].get_id();
-            char i_content=pages[i_page_order].get_content();
-            for (int h = i_y; h < (i_height+i_y); h++) {
+void Board::second_delete_process(vector <int> inverted_del_log){//re-posit 이때 on_page 업데이트
+    for(int i = 0; i < inverted_del_log.size(); i++){
+        int id = inverted_del_log[i];//id 불러오기.
+        Page current_page = pages[Page::find_by_id(id,pages)];
+        int i_x=current_page.get_x();
+        int i_y=current_page.get_y();
+        int i_width=current_page.get_width();
+        int i_height=current_page.get_height();
+        int i_id=current_page.get_id();
+        char i_content=current_page.get_content();
+        for (int h = i_y; h < (i_height+i_y); h++) {
                 for (int w = i_x; w < (i_width+i_x); w++) {
-                    pages[i_page_order].below_contents[h*width + w]=board[h*width + w];//below_contents update!
+                    pages[Page::find_by_id(i_id,pages)].below_contents[h*width + w]=board[h*width + w];//below_contents update!
                 }
             }
             for (int h = i_y; h < (i_height+i_y); h++) {
@@ -298,13 +293,6 @@ void Board::second_delete_process(int id){//re-posit 이때 on_page 업데이트
                 }
             }
             print_board();
-            pages[i_page_order].on_pages={};
-            push_on_page(pages[i_page_order],pages);//on_page
-            Board::second_delete_process(pages[i_page_order].get_id());
-        }
-    }
-    else {  
-        return;
     }
 }
 
